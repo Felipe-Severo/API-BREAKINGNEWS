@@ -1,0 +1,18 @@
+{
+  "name": "api-breakingnews",
+  "version": "1.0.0",
+  "description": "API for SPA BreakingNews",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Felipe Severo",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
+  }
+}
