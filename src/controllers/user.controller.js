@@ -1,13 +1,21 @@
-const soma = (req, res) => {
-    const a = 10;
-    const b = 20;
-    const soma = a + b;
-    const result = "O resultado da soma entre " + a + " e " + b + " é: " + soma;
+const create = (req, res) => {
+    const { name, username, email, password, avatar, background } = req.body;
 
-    res.send({
-        result: result,
-        soma: soma
-    })
+    if (!name || !username || !email || !password || !avatar || !background) {
+        return res.status(400).json({ error: "Preencha todos os campos" });
+    }
+
+    res.status(201).send({
+        message: "Usuário criado com sucesso",
+        user: {
+            name,
+            username,
+            email,
+            password,
+            avatar,
+            background
+        }
+    });
 };
 
-module.exports = {soma};
+module.exports = { create };
