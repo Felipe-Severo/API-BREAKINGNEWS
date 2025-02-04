@@ -40,7 +40,7 @@ const findAll = async (req, res) => {
         message: "Usuários encontrados com sucesso",
         users
     });
-}
+};
 
 const findById = async (req, res) => {
     const id = req.params.id;
@@ -57,7 +57,46 @@ const findById = async (req, res) => {
 
     res.status(200).send({
         message: "Usuário encontrado com sucesso",
-        user    
+        user
     });
-}
-module.exports = { create, findAll, findById };
+};
+
+const update = async (req, res) => {
+    const { name, username, email, password, avatar, background } = req.body;
+
+    if (!name && !username && !email && !password && !avatar && !background) {
+        return res.status(400).json({ error: "Preencha todos os campos" });
+    };
+
+    const id = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({ error: "Id inválido" });
+    }
+
+    const user = await userService.findByIdService(id);
+
+    if (!user) {
+        return res.status(400).send({ error: "Erro ao buscar usuário" });
+    }
+
+    await userService.updateService(
+        id,
+        name,
+        username,
+        email,
+        password,
+        avatar,
+        background
+    );
+
+    if (!user) {
+        return res.status(400).send({ error: "Erro ao atualizar usuário" });
+    }
+
+    res.status(200).send({
+        message: "Usuário atualizado com sucesso",
+        user
+    })
+};
+module.exports = { create, findAll, findById, update };
