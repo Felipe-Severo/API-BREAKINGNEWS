@@ -65,7 +65,7 @@ const update = async (req, res) => {
     const { name, username, email, password, avatar, background } = req.body;
 
     if (!name && !username && !email && !password && !avatar && !background) {
-        return res.status(400).json({ error: "Preencha todos os campos" });
+        return res.status(400).json({ error: "Preencha algum dos campos de usuário" });
     };
 
     const id = req.params.id;
@@ -99,4 +99,10 @@ const update = async (req, res) => {
         user
     })
 };
-module.exports = { create, findAll, findById, update };
+
+module.exports = { 
+    create, 
+    findAll, 
+    findById, 
+    update 
+};
