@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const connectDatabase = () => {
     console.log('Conectando ao banco de dados...');
 
-    mongoose.connect('mongodb+srv://felipisevero:XYUqOP7Ox13xU91O@cluster0.uupqt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+    mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
