@@ -1,6 +1,4 @@
-const createService = require('../services/car.service');
-
-const carService = createService();
+const carService = require('../services/car.service');
 
 const create = async (req, res) => {
     const { brand, model, year, color } = req.body;

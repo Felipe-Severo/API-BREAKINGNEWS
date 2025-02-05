@@ -16,7 +16,11 @@ const CarSchema = new mongoose.Schema({
     color: {
         type: String,
         required: true
-    }
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    } 
 });
 
 const Car = mongoose.model('Car', CarSchema);
