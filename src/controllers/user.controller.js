@@ -1,5 +1,4 @@
 const userService = require('../services/user.service');
-const mongoose = require('mongoose');
 
 const create = async (req, res) => {
     const { name, username, email, password, avatar, background } = req.body;
@@ -43,17 +42,7 @@ const findAll = async (req, res) => {
 };
 
 const findById = async (req, res) => {
-    const id = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send({ error: "Id inválido" });
-    }
-
-    const user = await userService.findByIdService(id);
-
-    if (!user) {
-        return res.status(400).send({ error: "Erro ao buscar usuário" });
-    }
+    const user = req.user;
 
     res.status(200).send({
         message: "Usuário encontrado com sucesso",
@@ -68,17 +57,7 @@ const update = async (req, res) => {
         return res.status(400).json({ error: "Preencha algum dos campos de usuário" });
     };
 
-    const id = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send({ error: "Id inválido" });
-    }
-
-    const user = await userService.findByIdService(id);
-
-    if (!user) {
-        return res.status(400).send({ error: "Erro ao buscar usuário" });
-    }
+    const {id, user} = req;
 
     await userService.updateService(
         id,
@@ -89,10 +68,6 @@ const update = async (req, res) => {
         avatar,
         background
     );
-
-    if (!user) {
-        return res.status(400).send({ error: "Erro ao atualizar usuário" });
-    }
 
     res.status(200).send({
         message: "Usuário atualizado com sucesso",
