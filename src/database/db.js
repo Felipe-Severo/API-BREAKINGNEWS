@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const connectDatabase = () => {
     console.log('Conectando ao banco de dados...');
@@ -17,4 +18,4 @@ const connectDatabase = () => {
     });
 }
 
-module.exports = connectDatabase;
+export default connectDatabase;

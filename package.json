@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "Felipe Severo",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

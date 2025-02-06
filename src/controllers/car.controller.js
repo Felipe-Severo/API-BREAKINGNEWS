@@ -1,7 +1,7 @@
-const carService = require('../services/car.service');
+import carService from '../services/car.service.js';
 
 const create = async (req, res) => {
-    const { brand, model, year, color } = req.body;
+    try {const { brand, model, year, color } = req.body;
 
     if (!brand || !model || !year || !color) {
         return res.status(400).json({ error: "Preencha todos os campos" });
@@ -24,6 +24,10 @@ const create = async (req, res) => {
             date: car.date
         },
     });
+
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    };
 };
 
-module.exports = { create };
+export default {create};

@@ -1,5 +1,5 @@
-const Car = require('../models/Car.model');
+import Car from '../models/Car.model.js';
 
 const createService = (body) => Car.create(body);
 
-module.exports = { createService };
+export default {createService};

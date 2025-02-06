@@ -1,6 +1,8 @@
-const route = require('express').Router();
-const carController = require('../controllers/car.controller');
+import express from 'express';
+import carController from '../controllers/car.controller.js';
 
-route.post('/', carController.create);
+const router = express.Router();
 
-module.exports = route;
+router.post('/', carController.create);
+
+export default router;
