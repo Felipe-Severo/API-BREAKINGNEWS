@@ -1,13 +1,14 @@
 import express from 'express';
 import userController from '../controllers/user.controller.js';
+import userService from '../services/user.service.js';
 
 const router = express.Router();
 
-import { validId, validUser } from '../middlewares/global.middleware.js';
+import { validId, validEntity } from '../middlewares/global.middleware.js';
 
 router.post('/', userController.create);
 router.get('/', userController.findAll);
-router.get('/:id', validId, validUser, userController.findById);
-router.patch('/:id', validId, validUser, userController.update);
+router.get('/:id', validId, validEntity(userService, 'User'), userController.findById);
+router.patch('/:id', validId, validEntity(userService, 'User'), userController.update);
 
 export default router;

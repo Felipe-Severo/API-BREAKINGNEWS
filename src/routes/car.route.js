@@ -1,11 +1,13 @@
 import express from 'express';
 import carController from '../controllers/car.controller.js';
-import { validId, validUser } from '../middlewares/global.middleware.js';
+import carService from '../services/car.service.js';
 
 const router = express.Router();
 
+import { validId, validEntity } from '../middlewares/global.middleware.js';
+
 router.post('/', carController.create);
 router.get('/', carController.findAll);
-router.get('/:id', validId, validUser, carController.findById);
+router.get('/:id', validId, validEntity(carService, 'Car'), carController.findById);
 
 export default router;
