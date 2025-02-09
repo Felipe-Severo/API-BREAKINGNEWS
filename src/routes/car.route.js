@@ -1,8 +1,8 @@
-import express from 'express';
+import {Router} from 'express';
 import carController from '../controllers/car.controller.js';
 import carService from '../services/car.service.js';
 
-const router = express.Router();
+const router = Router();
 
 import { validId, validEntity } from '../middlewares/global.middleware.js';
 
