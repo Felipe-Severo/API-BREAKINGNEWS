@@ -9,18 +9,11 @@ const create = async (req, res) => {
             return res.status(400).send({ message: "Submit all fields for create news" });
         }
 
-        // const userId = "67a69b53a5cee76cf25ecfa0";
-
-        // if (!mongoose.Types.ObjectId.isValid(userId)) {
-        //     return res.status(400).send({ message: "Invalid user ID" });
-        // }
-
         await createService({
             title,
             text,
             banner,
-            user: { _id: "67a69b53a5cee76cf25ecfa0" },
-            //user: new mongoose.Types.ObjectId(userId),
+            user: req.userId,
         });
 
         res.sendStatus(201);
