@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+/**
+ * Schema de Notícias
+ * Representa uma notícia no sistema, armazenando informações como título, texto, banner, data de criação,
+ * o usuário que publicou, além de curtidas e comentários associados.
+ */
 const NewsSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -24,11 +29,11 @@ const NewsSchema = new mongoose.Schema({
     },
     likes: {
         type: Array,
-        require: true
+        required: true
     },
     comments: {
         type: Array,
-        require: true
+        required: true
     }
 });
 
