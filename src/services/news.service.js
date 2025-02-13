@@ -11,6 +11,8 @@ const createService = (body) => News.create(body);
  * Retorna todas as notícias cadastradas no sistema.
  * @returns {Promise<Array>} - Lista de notícias.
  */
-const findAllService = () => News.find();
+const findAllService = (offset, limit) => News.find().sort({ createdAt: -1 }).skip(offset).limit(limit).populate("user");
 
-export { createService, findAllService };
+const countNews = () => News.countDocuments();
+
+export { createService, findAllService, countNews };
