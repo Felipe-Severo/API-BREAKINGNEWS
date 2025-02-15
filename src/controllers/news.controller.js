@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { createService, findAllService, countNews } from '../services/news.service.js';
+import { createService, findAllService, countNews, topNewsService } from '../services/news.service.js';
 
 const create = async (req, res) => {
     try {
@@ -25,36 +25,34 @@ const create = async (req, res) => {
         res.status(400).send({ message: error.message });
     }
 }
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * Retrieves a paginated list of news articles.
- * 
- * This function handles optional query parameters for pagination:
- * - `limit`: The maximum number of articles to return (default is 5).
- * - `offset`: The number of articles to skip before starting to collect the result set (default is 0).
- * 
- * It returns a JSON response containing:
- * - `nextUrl`: URL for the next page of results, if applicable.
- * - `previousUrl`: URL for the previous page of results, if applicable.
- * - `total`: Total number of news articles.
- * - `limit`: The limit used for pagination.
- * - `offset`: The offset used for pagination.
- * - `results`: An array of news articles, each containing:
- *   - `id`: The ID of the news article.
- *   - `title`: The title of the news article.
- *   - `text`: The text content of the news article.
- *   - `banner`: The banner image URL of the news article.
- *   - `likes`: The list of likes associated with the news article.
- *   - `comments`: The list of comments associated with the news article.
- *   - `name`: The name of the user who created the news article.
- *   - `username`: The username of the user who created the news article.
- *   - `createdAt`: The creation date of the news article.
- * 
- * If no news articles are found, it returns a 400 status with an appropriate message.
- * In case of an error, it catches and handles validation and cast errors, returning a 400 status with error details.
- */
 
-/******  07072579-7990-4324-b9f0-bfb43dd7ecc7  *******/
+/**
+ * Recupera uma lista paginada de artigos de notícias.
+ * 
+ * Esta função lida com parâmetros de consulta opcionais para paginação:
+ * - `limit`: O número máximo de artigos a serem retornados (o padrão é 5).
+ * - `offset`: O número de artigos a serem ignorados antes de começar a coletar o conjunto de resultados (o padrão é 0).
+ * 
+ * Retorna uma resposta JSON contendo:
+ * - `nextUrl`: URL para a próxima página de resultados, se aplicável.
+ * - `previousUrl`: URL para a página anterior de resultados, se aplicável.
+ * - `total`: Número total de artigos de notícias.
+ * - `limit`: O limite utilizado para a paginação.
+ * - `offset`: O deslocamento utilizado para a paginação.
+ * - `results`: Um array de artigos de notícias, cada um contendo:
+ *   - `id`: O ID do artigo de notícia.
+ *   - `title`: O título do artigo de notícia.
+ *   - `text`: O conteúdo do artigo de notícia.
+ *   - `banner`: A URL da imagem do banner do artigo de notícia.
+ *   - `likes`: A lista de curtidas associadas ao artigo de notícia.
+ *   - `comments`: A lista de comentários associados ao artigo de notícia.
+ *   - `name`: O nome do usuário que criou o artigo de notícia.
+ *   - `username`: O nome de usuário de quem criou o artigo de notícia.
+ *   - `createdAt`: A data de criação do artigo de notícia.
+ * 
+ * Se nenhum artigo de notícia for encontrado, retorna um status 400 com uma mensagem apropriada.
+ * Em caso de erro, captura e trata erros de validação e conversão, retornando um status 400 com detalhes do erro.
+ */
 const findAll = async (req, res) => {
 
     try {
@@ -102,7 +100,7 @@ const findAll = async (req, res) => {
                 name: item.user.name,
                 username: item.user.username,
                 createdAt: item.createdAt
-            }) 
+            })
             )
         });
     } catch (error) {
@@ -114,4 +112,37 @@ const findAll = async (req, res) => {
     }
 }
 
-export { create, findAll };
+/**
+ * Retorna a notícia mais recente cadastrada no sistema.
+ * 
+ * Se nenhuma notícia for encontrada, retorna um status 400 com uma mensagem apropriada.
+ * Em caso de erro, captura e trata erros de validação e conversão, retornando um status 400 com detalhes do erro.
+ */
+const topNews = async (req, res) => {
+    try {
+        const news = await topNewsService();
+
+        if (!news) {
+            return res.status(400).send({ message: "There are no news" });
+        }
+
+        res.send({
+            news: {
+                id: news._id,
+                title: news.title,
+                text: news.text,
+                banner: news.banner,
+                likes: news.likes,
+                coments: news.comments,
+                name: news.user.name,
+                username: news.user.username,
+                createdAt: news.createdAt
+            }
+        })
+    }
+    catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
+export { create, findAll, topNews };
