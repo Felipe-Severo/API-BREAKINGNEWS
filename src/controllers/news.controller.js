@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { createService, findAllService, countNews, topNewsService } from '../services/news.service.js';
+import { createService, findAllService, countNews, topNewsService, findByIdService } from '../services/news.service.js';
 
 const create = async (req, res) => {
     try {
@@ -136,6 +136,7 @@ const topNews = async (req, res) => {
                 coments: news.comments,
                 name: news.user.name,
                 username: news.user.username,
+                avatar: news.user.avatar,
                 createdAt: news.createdAt
             }
         })
@@ -145,4 +146,35 @@ const topNews = async (req, res) => {
     }
 }
 
-export { create, findAll, topNews };
+const findById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const news = await findByIdService(id);
+
+        return res.send({
+            news: {
+                id: news._id,
+                title: news.title,
+                text: news.text,
+                banner: news.banner,
+                likes: news.likes,
+                coments: news.comments,
+                name: news.user.name,
+                username: news.user.username,
+                avatar: news.user.avatar,
+                createdAt: news.createdAt
+            }
+        })
+        if (!news) {
+            return res.status(400).send({ message: "There are no news" });
+        }
+
+        req.news = news;
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
+export { create, findAll, topNews, findById };
