@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
-import { createService, findAllService, countNews, topNewsService, findByIdService } from '../services/news.service.js';
+import {
+    createService,
+    findAllService,
+    countNews,
+    topNewsService,
+    findByIdService,
+    searchByTitleService
+} from '../services/news.service.js';
 
 const create = async (req, res) => {
     try {
@@ -146,6 +153,17 @@ const topNews = async (req, res) => {
     }
 }
 
+/**
+ * Retorna uma notícia pelo seu ID.
+ * 
+ * Se nenhuma notícia for encontrada, retorna um status 400 com uma mensagem apropriada.
+ * Em caso de erro, captura e trata erros de validação e conversão, retornando um status 400 com detalhes do erro.
+ * 
+ * @param {Object} req - Request Express.
+ * @param {Object} res - Response Express.
+ * @param {Function} next - Função de callback para o próximo middleware.
+ */
+
 const findById = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -177,4 +195,34 @@ const findById = async (req, res, next) => {
     }
 }
 
-export { create, findAll, topNews, findById };
+const searchByTitle = async (req, res) => {
+    try {
+        const { title } = req.query;
+
+        const news = await searchByTitleService(title);
+
+        if (news.length === 0) {
+            return res.status(404).send({ message: "There are no news with this title" });
+        }
+        
+        console.log(news);
+        return res.send({
+            results: news.map((item) => ({
+                id: item._id,
+                title: item.title,
+                text: item.text,
+                banner: item.banner,
+                likes: item.likes,
+                comments: item.comments,
+                name: item.user.name,
+                username: item.user.username,
+                avatar: item.user.avatar,
+                createdAt: item.createdAt
+            }))
+        });
+    } catch (error) {
+        res.status(500).send({ message: "Internal server error", error: error.message });
+    }
+}
+
+export { create, findAll, topNews, findById, searchByTitle };
