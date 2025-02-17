@@ -5,7 +5,8 @@ import {
     countNews,
     topNewsService,
     findByIdService,
-    searchByTitleService
+    searchByTitleService,
+    byUserService
 } from '../services/news.service.js';
 
 const create = async (req, res) => {
@@ -204,8 +205,36 @@ const searchByTitle = async (req, res) => {
         if (news.length === 0) {
             return res.status(404).send({ message: "There are no news with this title" });
         }
-        
+
         console.log(news);
+        return res.send({
+            results: news.map((item) => ({
+                id: item._id,
+                title: item.title,
+                text: item.text,
+                banner: item.banner,
+                likes: item.likes,
+                comments: item.comments,
+                name: item.user.name,
+                username: item.user.username,
+                avatar: item.user.avatar,
+                createdAt: item.createdAt
+            }))
+        });
+    } catch (error) {
+        res.status(500).send({ message: "Internal server error", error: error.message });
+    }
+};
+
+const byUser = async (req, res) => {
+    try {
+        const id = req.userId;
+        const news = await byUserService(id);
+
+        if (news.length === 0) {
+            return res.status(404).send({ message: "There are no news from this user" });
+        }
+
         return res.send({
             results: news.map((item) => ({
                 id: item._id,
@@ -225,4 +254,5 @@ const searchByTitle = async (req, res) => {
     }
 }
 
-export { create, findAll, topNews, findById, searchByTitle };
+
+export { create, findAll, topNews, findById, searchByTitle, byUser };
