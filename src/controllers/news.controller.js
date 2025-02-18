@@ -7,7 +7,8 @@ import {
     findByIdService,
     searchByTitleService,
     byUserService,
-    updateService
+    updateService,
+    eraseService
 } from '../services/news.service.js';
 
 const create = async (req, res) => {
@@ -278,6 +279,23 @@ const update = async (req, res) => {
     }
 }
 
+const erase = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const news = await findByIdService(id);
+
+        if (String(news.user._id) != req.userId) {
+            return res.status(401).send({ message: "Unauthorized" });
+        }
+
+        await eraseService(id);
+
+        return res.status(200).send({ message: "News deleted with success" });
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
 export { 
     create, 
     findAll, 
@@ -285,5 +303,6 @@ export {
     findById, 
     searchByTitle, 
     byUser, 
-    update 
+    update,
+    erase 
 };
