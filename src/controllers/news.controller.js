@@ -6,7 +6,8 @@ import {
     topNewsService,
     findByIdService,
     searchByTitleService,
-    byUserService
+    byUserService,
+    updateService
 } from '../services/news.service.js';
 
 const create = async (req, res) => {
@@ -254,5 +255,35 @@ const byUser = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        const {title, text, banner} = req.body;
+        const id = req.params.id;
 
-export { create, findAll, topNews, findById, searchByTitle, byUser };
+        if (!title && !text && !banner) {
+            return res.status(400).json({ message: "Submit at least one fields for update news" });
+        }
+
+        const news = await findByIdService(id);
+
+        if (String(news.user._id) != req.userId) {
+            return res.status(401).send({ message: "Unauthorized" });
+        }
+
+        await updateService(id, title, text, banner );
+
+        return res.status(200).send({ message: "News updated with success" });
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
+export { 
+    create, 
+    findAll, 
+    topNews, 
+    findById, 
+    searchByTitle, 
+    byUser, 
+    update 
+};

@@ -23,4 +23,15 @@ const searchByTitleService = (title) => News.find({ title: { $regex: title || ""
 
 const byUserService = (id) => News.find({ user: id }).sort({ _id: -1 }).populate("user");
 
-export { createService, findAllService, countNews, topNewsService, findByIdService, searchByTitleService, byUserService };
+const updateService = (id, title, text, banner) => News.findOneAndUpdate({ _id: id }, { title, text, banner }, { rawResult: true });
+
+export {
+    createService,
+    findAllService,
+    countNews,
+    topNewsService,
+    findByIdService,
+    searchByTitleService,
+    byUserService,
+    updateService
+};
