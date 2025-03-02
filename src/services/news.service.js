@@ -27,9 +27,27 @@ const updateService = (id, title, text, banner) => News.findOneAndUpdate({ _id: 
 
 const eraseService = (id) => News.findOneAndDelete({ _id: id });
 
-const likeNewsService = (idNews, userId) => News.findOneAndUpdate({ _id: idNews, "likes.userId": { $nin: [ userId ] } }, { $push: { likes: { userId, createdAt: new Date() } } });
+const likeNewsService = (idNews, userId) => News.findOneAndUpdate({ _id: idNews, "likes.userId": { $nin: [userId] } }, { $push: { likes: { userId, createdAt: new Date() } } });
 
 const unlikeNewsService = (idNews, userId) => News.findOneAndUpdate({ _id: idNews }, { $pull: { likes: { userId } } });
+
+const addCommentService = (idNews, userId, comment) => {
+    const idComment = Math.floor(Date.now() * Math.random()).toString(36);
+
+    return News.findOneAndUpdate(
+        { _id: idNews },
+        { $push: { comments: { idComment, userId, comment, createdAt: new Date() } } },
+        { new: true }
+    );
+};
+
+const removeCommentService = async (idNews, idComment) => {
+    return await News.findOneAndUpdate(
+        { _id: idNews },
+        { $pull: { comments: { idComment } } },
+        { new: true }
+    );
+};
 
 export {
     createService,
@@ -42,5 +60,7 @@ export {
     updateService,
     eraseService,
     likeNewsService,
-    unlikeNewsService
+    unlikeNewsService,
+    addCommentService,
+    removeCommentService
 };

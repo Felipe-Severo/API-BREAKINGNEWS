@@ -10,7 +10,9 @@ import {
     updateService,
     eraseService,
     likeNewsService,
-    unlikeNewsService
+    unlikeNewsService,
+    addCommentService,
+    removeCommentService
 } from '../services/news.service.js';
 
 const create = async (req, res) => {
@@ -260,7 +262,7 @@ const byUser = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const {title, text, banner} = req.body;
+        const { title, text, banner } = req.body;
         const id = req.params.id;
 
         if (!title && !text && !banner) {
@@ -273,7 +275,7 @@ const update = async (req, res) => {
             return res.status(401).send({ message: "Unauthorized" });
         }
 
-        await updateService(id, title, text, banner );
+        await updateService(id, title, text, banner);
 
         return res.status(200).send({ message: "News updated with success" });
     } catch (error) {
@@ -309,24 +311,82 @@ const likeNews = async (req, res) => {
             await unlikeNewsService(id, userId);
             return res.status(200).send({ message: "News unliked with success" });
         }
-        console.log(newsLiked);
 
-        return res.status(200).send({ message: "News liked with success"});
+        return res.status(200).send({ message: "News liked with success" });
     } catch (error) {
         res.status(400).send({ message: error.message });
     }
 }
 
+const addComment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.userId;
+        const { comment } = req.body;
 
+        if (!comment) {
+            return res.status(400).send({ message: "Comment is required" });
+        }
 
-export { 
-    create, 
-    findAll, 
-    topNews, 
-    findById, 
-    searchByTitle, 
-    byUser, 
+        await addCommentService(id, userId, comment);
+
+        return res.status(200).send({ message: "Comment added with success" });
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
+const deleteComment = async (req, res) => {
+    try {
+        const { idNews, idComment } = req.params;
+        const userId = req.userId; // ID do usuário autenticado
+
+        // Buscar a notícia pelo ID
+        const news = await findByIdService(idNews);
+        if (!news) {
+            return res.status(404).send({ message: "News not found" });
+        }
+
+        // Verificar se a notícia tem um usuário associado
+        if (!news.user || !news.user._id) {
+            return res.status(500).send({ message: "Error: News owner ID is missing from database." });
+        }
+
+        // Encontrar o comentário dentro da notícia
+        const comment = news.comments.find(comment => comment.idComment.toString() === idComment);
+        if (!comment) {
+            return res.status(404).send({ message: "Comment not found" });
+        }
+
+        // Converter IDs para string antes da comparação
+        const newsOwnerId = news.user._id.toString(); // 🔥 Agora acessamos news.user._id
+        const commentOwnerId = comment.userId.toString();
+
+        // Permitir exclusão apenas se for o dono do comentário ou da notícia
+        if (commentOwnerId.toString() !== userId.toString() && newsOwnerId.toString() !== userId.toString()) {
+            return res.status(403).send({ message: "Unauthorized: You can only delete your own comments or if you are the owner of the news" });
+        }
+
+        // Chamar serviço para remover o comentário
+        await removeCommentService(idNews, idComment);
+
+        return res.status(200).send({ message: "Comment deleted successfully" });
+    } catch (error) {
+        console.error("Error:", error.message);
+        return res.status(500).send({ message: "Internal server error" });
+    }
+};
+
+export {
+    create,
+    findAll,
+    topNews,
+    findById,
+    searchByTitle,
+    byUser,
     update,
     erase,
-    likeNews 
+    likeNews,
+    addComment,
+    deleteComment
 };
